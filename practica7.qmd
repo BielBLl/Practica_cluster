@@ -212,4 +212,19 @@ fviz_cluster(object = medoide_clusters, data = escalado, ellipse.type = "t", rep
   theme_bw() + theme(legend.position = "none")
 ```
 
+Veamos si obviando algunas variables podemos encontrar un modelo que tenga mayor representación de variabilidad en las componenetes principales. Debido a la alta relación de las variables podemos ver con la matriz de corelaciones que las varaibles con mas peso son altura,peso y cintura. Por ejemplo el IMC está completamente definido por el peso y la altura.
+```{r}
+mios<-datos %>% select("altura","peso","cintura")
+fviz_nbclust(x = mios, FUNcluster = pam, method = "wss",
+             diss = dist(datos, method = "manhattan"))
+```
+Por el metodo del codo el valor $k=2$ dará los mejores resultados además de evitar solapamientos como antes.
 
+```{r}
+medoide_clusters <- pam(x = mios, k = 2, metric = "manhattan")
+medoide_clusters
+fviz_cluster(object = medoide_clusters, data = mios, ellipse.type = "t", repel = TRUE) +
+  theme_bw() + theme(legend.position = "none")
+```
+
+Así obtenemos una variabilidad total de $83.6\%$ con un solapamiento tolerable comparado con los valores de $k$ mayores.
