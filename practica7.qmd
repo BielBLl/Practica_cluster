@@ -1,0 +1,160 @@
+---
+title: "Ejercicios para exponer"
+subtitle: "20582- Análisis de Datos para el GMAT"
+date: today
+format:
+  html:
+    theme: lumen
+    toc: true
+    toc-depth: 3
+Rendering:
+    embed-resources: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Problema 5 - Enunciado
+
+La tabla de [datos_antropométricos](https://github.com/igmuib/Practica_AD/blob/main/datos_antropometricos.csv) presenta un conjunto de datos simulados que recopila información sobre 200 observaciones de hombres y mujeres. Este conjunto incluye las siguientes variables:
+
+-   `altura`: Altura en centímetros
+-   `peso`: Peso en kilogramos
+-   `cintura`: Circunferencia de la cintura en centímetros
+-   `cadera`: Circunferencia de la cadera en centímetros
+-   `IMC`: Índice de Masa Corporal (IMC)
+-   `grasa_corporal`: Porcentaje de grasa corporal
+
+Presentad un análisis exploratorio de los datos junto con un resumen de lo observado en el contexto del problema. Aplicad técnicas de clustering para agrupar individuos que tengan formas de cuerpos semejantes. Escribid una conclusión del análisis realizado en el contexto del problema
+
+# Librerias y carga de datos
+
+```{r}
+library(readr)
+library(dplyr)
+library(tidyverse)
+library(ggcorrplot) # Para la creación del gráfico de correlación
+library(scales) # Para editar gráficos (cambiar ancho del histograma)
+```
+
+```{r}
+datos <- read_csv("datos_antropometricos.csv")
+head(datos)
+```
+
+# Analisis descriptivo de los datos
+
+
+```{r}
+grafico_altura = datos %>%
+  ggplot(aes(x = altura)) + 
+  geom_histogram(color = "black", alpha = 1, binwidth = 1, size = 0.5) +
+  
+  # Títulos
+  ggtitle("Distribución de altura") +
+  labs(x = "Altura (cm)", y = "Frecuencia") +
+  theme_classic() +
+  theme(
+    plot.title = element_text(size = 21, face = "bold", hjust = 0.5), # Título principal
+    axis.text.x = element_text(size = 10),  # Tamaño del texto del eje X
+    axis.text.y = element_text(size = 14),  # Tamaño del texto del eje Y
+    axis.title.x = element_text(size = 18), # Tamaño del título del eje X
+    axis.title.y = element_text(size = 18),  # Tamaño del título del eje Y
+    legend.text = element_text(size = 15),  # Tamaño del texto de la leyenda
+    legend.title = element_text(size = 18), # Tamaño y estilo del título de la leyenda
+    legend.key.size = unit(0.7, "cm"),  # Tamaño de las claves de la leyenda
+    legend.position = "top"  # Posición de la leyenda
+  ) +
+  scale_x_continuous(breaks = pretty_breaks(n = 20))
+# Gira el gráfico a horizontal
+  
+print(grafico_altura)
+```
+```{r}
+grafico_altura = datos %>%
+  ggplot(aes(x = altura)) + 
+  # Histograma
+  geom_histogram(aes(y = ..density..), color = "black", fill = "lightblue", alpha = 0.7, binwidth = 1, size = 0.5) +
+  
+  # Curva de densidad
+  geom_density(color = "red", size = 1) +
+  
+  # Títulos
+  ggtitle("Distribución de altura") +
+  labs(x = "Altura (cm)", y = "Densidad") +
+  theme_classic() +
+  theme(
+    plot.title = element_text(size = 21, face = "bold", hjust = 0.5), # Título principal
+    axis.text.x = element_text(size = 10),  # Tamaño del texto del eje X
+    axis.text.y = element_text(size = 14),  # Tamaño del texto del eje Y
+    axis.title.x = element_text(size = 18), # Tamaño del título del eje X
+    axis.title.y = element_text(size = 18),  # Tamaño del título del eje Y
+    legend.text = element_text(size = 15),  # Tamaño del texto de la leyenda
+    legend.title = element_text(size = 18), # Tamaño y estilo del título de la leyenda
+    legend.key.size = unit(0.7, "cm"),  # Tamaño de las claves de la leyenda
+    legend.position = "top"  # Posición de la leyenda
+  ) +
+  scale_x_continuous(breaks = pretty_breaks(n = 20))
+
+# Mostrar el gráfico
+print(grafico_altura)
+
+```   
+```{r}
+grafico_peso = datos %>%
+  ggplot(aes(x = peso)) + 
+  geom_histogram(color = "black", alpha = 1, binwidth = 2, size = 0.5) +
+  
+  # Títulos
+  ggtitle("Distribución de peso") +
+  labs(x = "Peso (Kg)", y = "Frecuencia") +
+  theme_classic() +
+  theme(
+    plot.title = element_text(size = 21, face = "bold", hjust = 0.5), # Título principal
+    axis.text.x = element_text(size = 10),  # Tamaño del texto del eje X
+    axis.text.y = element_text(size = 14),  # Tamaño del texto del eje Y
+    axis.title.x = element_text(size = 18), # Tamaño del título del eje X
+    axis.title.y = element_text(size = 18),  # Tamaño del título del eje Y
+    legend.text = element_text(size = 15),  # Tamaño del texto de la leyenda
+    legend.title = element_text(size = 18), # Tamaño y estilo del título de la leyenda
+    legend.key.size = unit(0.7, "cm"),  # Tamaño de las claves de la leyenda
+    legend.position = "top"  # Posición de la leyenda
+  ) +
+  scale_x_continuous(breaks = pretty_breaks(n = 20))
+# Gira el gráfico a horizontal
+grafico_peso
+```
+
+**FALTA AÑADIR LOS OTROS GRÁFICOS Y ALGÚN GRÁFICO MULTIVARIANTE (Ej. ggpairs)**
+
+
+
+
+
+```{r}
+# Calcular la matriz de correlación
+matriz_correlacion <- cor(datos %>%
+                            select("altura","peso","cintura","cadera","IMC","grasa_corporal")
+                          )
+
+# Generar el gráfico de correlación
+ggcorrplot(matriz_correlacion, 
+           hc.order = TRUE,         # Ordenar jerárquicamente
+           type = "lower",          # Mostrar solo la mitad inferior
+           lab = TRUE,              # Añadir los valores de correlación
+           lab_size = 3.5,          # Tamaño del texto de los valores
+           colors = c("#4575b4", "#f7f7f7", "#d73027")) +  # Colores personalizados
+  ggtitle("Mapa de Correlación de Variables") +    # Añadir título
+  labs(x = "Variables", y = "Variables") +         # Títulos de los ejes
+  theme(plot.title = element_text(hjust = 0.5, size = 16),   # Centrar el título y ajustar tamaño
+        axis.title.x = element_text(size = 14),   # Tamaño del título del eje x
+        axis.title.y = element_text(size = 14))   # Tamaño del título del eje y
+
+```
+
+
+
+
+
+
