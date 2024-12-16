@@ -31,107 +31,77 @@ Presentad un análisis exploratorio de los datos junto con un resumen de lo obse
 # Librerias y carga de datos
 
 ```{r}
-library(readr)
+library(readr) # Para lectura de datos csv.
 library(dplyr)
 library(tidyverse)
 library(ggcorrplot) # Para la creación del gráfico de correlación
+library(GGally) # Para comparar variables a pares (ggpairs)
 library(scales) # Para editar gráficos (cambiar ancho del histograma)
-library(factoextra) # Para usar el metodo del codo
+library(factoextra) # Para hacer el mapa de calor y usar el metodo del codo 
 library(cluster)
+
 ```
 
 ```{r}
 datos <- read_csv("datos_antropometricos.csv")
 head(datos)
+datos_numericos<-datos %>% select(2:7)
 ```
 
 # Analisis descriptivo de los datos
 
-
 ```{r}
-grafico_altura = datos %>%
-  ggplot(aes(x = altura)) + 
-  geom_histogram(color = "black", alpha = 1, binwidth = 1, size = 0.5) +
-  
-  # Títulos
-  ggtitle("Distribución de altura") +
-  labs(x = "Altura (cm)", y = "Frecuencia") +
-  theme_classic() +
-  theme(
-    plot.title = element_text(size = 21, face = "bold", hjust = 0.5), # Título principal
-    axis.text.x = element_text(size = 10),  # Tamaño del texto del eje X
-    axis.text.y = element_text(size = 14),  # Tamaño del texto del eje Y
-    axis.title.x = element_text(size = 18), # Tamaño del título del eje X
-    axis.title.y = element_text(size = 18),  # Tamaño del título del eje Y
-    legend.text = element_text(size = 15),  # Tamaño del texto de la leyenda
-    legend.title = element_text(size = 18), # Tamaño y estilo del título de la leyenda
-    legend.key.size = unit(0.7, "cm"),  # Tamaño de las claves de la leyenda
-    legend.position = "top"  # Posición de la leyenda
+ggpairs(
+  datos, 
+  aes(color = factor(sexo), alpha = 0.7),
+  upper = list(continuous = wrap("cor", size = 3)),  # Tamaño del texto de correlación
+  diag = list(continuous = wrap("densityDiag")),
+  lower = list(continuous = wrap("points", size = 0.5))
+) +
+  scale_color_brewer(palette = "Set2", name = "Sexo") +
+  labs(
+    title = "Gráfico de Pares por Sexo",
+    subtitle = "Relación entre variables en función del sexo"
   ) +
-  scale_x_continuous(breaks = pretty_breaks(n = 20))
-# Gira el gráfico a horizontal
-  
-print(grafico_altura)
-```
-```{r}
-grafico_altura = datos %>%
-  ggplot(aes(x = altura)) + 
-  # Histograma
-  geom_histogram(aes(y = ..density..), color = "black", fill = "lightblue", alpha = 0.7, binwidth = 1, size = 0.5) +
-  
-  # Curva de densidad
-  geom_density(color = "red", size = 1) +
-  
-  # Títulos
-  ggtitle("Distribución de altura") +
-  labs(x = "Altura (cm)", y = "Densidad") +
-  theme_classic() +
+  theme_minimal() +
   theme(
-    plot.title = element_text(size = 21, face = "bold", hjust = 0.5), # Título principal
-    axis.text.x = element_text(size = 10),  # Tamaño del texto del eje X
-    axis.text.y = element_text(size = 14),  # Tamaño del texto del eje Y
-    axis.title.x = element_text(size = 18), # Tamaño del título del eje X
-    axis.title.y = element_text(size = 18),  # Tamaño del título del eje Y
-    legend.text = element_text(size = 15),  # Tamaño del texto de la leyenda
-    legend.title = element_text(size = 18), # Tamaño y estilo del título de la leyenda
-    legend.key.size = unit(0.7, "cm"),  # Tamaño de las claves de la leyenda
-    legend.position = "top"  # Posición de la leyenda
-  ) +
-  scale_x_continuous(breaks = pretty_breaks(n = 20))
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 10, hjust = 0.5),
+    strip.text = element_text(size = 8),
+    axis.text = element_text(size = 7)
+  )
 
-# Mostrar el gráfico
-print(grafico_altura)
-
-```   
-```{r}
-grafico_peso = datos %>%
-  ggplot(aes(x = peso)) + 
-  geom_histogram(color = "black", alpha = 1, binwidth = 2, size = 0.5) +
-  
-  # Títulos
-  ggtitle("Distribución de peso") +
-  labs(x = "Peso (Kg)", y = "Frecuencia") +
-  theme_classic() +
-  theme(
-    plot.title = element_text(size = 21, face = "bold", hjust = 0.5), # Título principal
-    axis.text.x = element_text(size = 10),  # Tamaño del texto del eje X
-    axis.text.y = element_text(size = 14),  # Tamaño del texto del eje Y
-    axis.title.x = element_text(size = 18), # Tamaño del título del eje X
-    axis.title.y = element_text(size = 18),  # Tamaño del título del eje Y
-    legend.text = element_text(size = 15),  # Tamaño del texto de la leyenda
-    legend.title = element_text(size = 18), # Tamaño y estilo del título de la leyenda
-    legend.key.size = unit(0.7, "cm"),  # Tamaño de las claves de la leyenda
-    legend.position = "top"  # Posición de la leyenda
-  ) +
-  scale_x_continuous(breaks = pretty_breaks(n = 20))
-# Gira el gráfico a horizontal
-grafico_peso
 ```
 
-**FALTA AÑADIR LOS OTROS GRÁFICOS Y ALGÚN GRÁFICO MULTIVARIANTE (Ej. ggpairs)**
+Analicemos primero las variables de forma individual.
 
+-   Todas las variables parecen seguir una distribución normal.
+-   En algunas variables, observamos la presencia de algunos valores bastante superiores o inferiores que el resto (outliers). Lo deberemos tener en cuenta próximamente para realizar el clustering.
+-   Al separar los datos en función del sexo, observamos que en la **altura**, **peso** y **cintura**, la mujeres tienen valores superiores. Para la **cardera** y el **IMC** tienen valores similares. Y para la **grasa corporal** los hombres tienen valores superiores.
 
+En cuanto al análisis por pares tenemos
 
+-   En las variables **altura**, **peso** y **cintura** observamos que los datos estan agrupados por sexo. Posteriormente, en el clustering, lo analizaremos.
+-   En las correlaciones, destacan
+    - La correlación positiva entre: **peso** y **altura**; **cintura** y **altura** ; **cintura** y **peso**.
+    - La correlación negativa entre: **grasa corporal** y **altura**; **grasa corporal** y **peso** ; **grasa corporal** y **cintura**.
+    - Mencionar que sorprende la baja correlación del **IMC** con la **altura** y el **peso**, ya que el IMC se calcula siguiendo la fórmula $IMC = \frac{peso}{altura^2}$.
+    
+```{r}
+# Calcular la matriz de distancia
+distancia <- dist(datos_numericos, method = "euclidean")  # Cambia "euclidean" si prefieres otro método
+
+# Visualizar el mapa de calor de distancias
+fviz_dist(as.dist(distancia), 
+          gradient = list(low = "blue", mid = "white", high = "red"),
+          lab_size = 8) +
+  ggtitle("Mapa de Calor de Distancias") +
+  theme_minimal()+
+  theme(
+    axis.text.x = element_blank(), # Quitar texto del eje X
+    axis.text.y = element_blank()
+  )
+```
 
 
 ```{r}
@@ -158,13 +128,14 @@ ggcorrplot(matriz_correlacion,
 **Metodo codo+ visualtización de cluster con diferentes distancias**
 
 Similar al ejemplo 5.2.5 al tener datos con procedemos a escalarlos, usaremos el método del codo para obtener el número de clusters óptimo. Primero probaremos usando la distáncia euclidea.
+
 ```{r}
-datos_numericos<-datos %>% select(2:7)
 escalado<-scale(datos_numericos)
 fviz_nbclust(x = escalado, FUNcluster = kmeans, method = "wss",
              diss = dist(datos, method = "euclidean")) +
   geom_vline(xintercept = 4, linetype = 2)
 ```
+
 Parece razonable pues escoger $k=4$ como número de clusters, ahora fijemos una semilla i veamos si los datos se comportan bien con este número de clusters. También calcularemos los puntos iniciales del algoritmo.
 
 ```{r}
@@ -192,6 +163,7 @@ fviz_cluster(object = centro_cluster_1, data = escalado, show.clust.cent = TRUE,
 Este clustering nos definiria dos tipos de cuerpo pero debemos notar que la variabilidad definida por las componenetes principales es $56.8\%<75\%$ por lo que no seria un modelo muy fiable. Esta falta de variabilidad puede ser debido al uso de k-medias o la distancia euclidiana, como podemos notar hay muchos valores lejanos al centro del cluster, en este caso será mas robusto el uso de k-medoides.
 
 Al tener valores lejanos el metodo "manhattan" resultará mas apto para el cálculo del número de clusters
+
 ```{r}
 fviz_nbclust(x = escalado, FUNcluster = pam, method = "wss",
              diss = dist(datos, method = "manhattan"))
@@ -203,6 +175,7 @@ Para encontrar los clusters por k-medoides usaremos la función "pam" con $k=2$,
 medoide_clusters <- pam(x = escalado, k = 2, metric = "manhattan")
 medoide_clusters
 ```
+
 Aqui falta fer una explicació del que es veu aquí!!!!!!!!!!!!
 
 Veamos una representación gráfica del clustering dado por la función "pam":
@@ -213,11 +186,13 @@ fviz_cluster(object = medoide_clusters, data = escalado, ellipse.type = "t", rep
 ```
 
 Veamos si obviando algunas variables podemos encontrar un modelo que tenga mayor representación de variabilidad en las componenetes principales. Debido a la alta relación de las variables podemos ver con la matriz de corelaciones que las varaibles con mas peso son altura,peso y cintura. Por ejemplo el IMC está completamente definido por el peso y la altura.
+
 ```{r}
 mios<-datos %>% select("altura","peso","cintura")
 fviz_nbclust(x = mios, FUNcluster = pam, method = "wss",
              diss = dist(datos, method = "manhattan"))
 ```
+
 Por el metodo del codo el valor $k=2$ dará los mejores resultados además de evitar solapamientos como antes.
 
 ```{r}
@@ -226,5 +201,26 @@ medoide_clusters
 fviz_cluster(object = medoide_clusters, data = mios, ellipse.type = "t", repel = TRUE) +
   theme_bw() + theme(legend.position = "none")
 ```
-
 Así obtenemos una variabilidad total de $83.6\%$ con un solapamiento tolerable comparado con los valores de $k$ mayores.
+
+```{r}
+medoide_clusters
+```
+
+
+```{r}
+datos <- datos %>%
+  mutate(cluster = medoide_clusters$clustering)
+
+# Crear tabla de contingencia
+tabla_contingencia <- table(datos$sexo, datos$cluster)
+
+# Ver la tabla
+print(tabla_contingencia)
+
+```
+Por hacer:
+-   **Explicar que el cluster ha sido capaz de separar entre hombres y mujeres**
+-   **Analizar que les pasa a los individuos con no se han separado (Ej. quizá es un hombre más alto que el resto)**
+
+
