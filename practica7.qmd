@@ -1,6 +1,7 @@
 ---
-title: "Ejercicios para exponer"
+title: "Problema 5"
 subtitle: "20582- Análisis de Datos para el GMAT"
+author: Biel Bauzà, Marc Arrom, Eulàlia Tous i Rebeca Payà
 date: today
 format:
   html:
@@ -15,7 +16,7 @@ Rendering:
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-## Problema 5 - Enunciado
+## Enunciat
 
 La tabla de [datos_antropométricos](https://github.com/igmuib/Practica_AD/blob/main/datos_antropometricos.csv) presenta un conjunto de datos simulados que recopila información sobre 200 observaciones de hombres y mujeres. Este conjunto incluye las siguientes variables:
 
@@ -28,9 +29,7 @@ La tabla de [datos_antropométricos](https://github.com/igmuib/Practica_AD/blob/
 
 Presentad un análisis exploratorio de los datos junto con un resumen de lo observado en el contexto del problema. Aplicad técnicas de clustering para agrupar individuos que tengan formas de cuerpos semejantes. Escribid una conclusión del análisis realizado en el contexto del problema
 
-# Librerias y carga de datos
-
-```{r}
+```{r, echo=FALSE}
 library(readr) # Para lectura de datos csv.
 library(dplyr)
 library(tidyverse)
@@ -42,18 +41,43 @@ library(cluster)
 
 ```
 
-```{r}
+```{r, include=FALSE}
 datos <- read_csv("datos_antropometricos.csv")
 head(datos)
 datos_numericos<-datos %>% select(2:7)
 ```
 
-# Analisis descriptivo de los datos
+# Anàlisi descriptiu de les dades
 
-```{r}
+En aquest apartat tractarem de fer una visualització general de les dades i el seu comportament entre elles, com ara estudiar la seua correlació i mitjanes separat per sexe. A continuació mostrarem un parell de gràfiques on podrem veure el comportament de les nostres dades d'una forma més intuitiva i visual.
+
+```{r, echo=FALSE}
+# Calcular la matriz de correlación
+matriz_correlacion <- cor(datos %>%
+                            select("altura","peso","cintura","cadera","IMC","grasa_corporal")
+                          )
+
+# Generar el gráfico de correlación
+ggcorrplot(matriz_correlacion, 
+           hc.order = TRUE,         # Ordenar jerárquicamente
+           type = "lower",          # Mostrar solo la mitad inferior
+           lab = TRUE,              # Añadir los valores de correlación
+           lab_size = 3.5,          # Tamaño del texto de los valores
+           colors = c("#4575b4", "#f7f7f7", "#d73027")) +  # Colores personalizados
+  ggtitle("Mapa de Correlació de Variables") +    # Añadir título
+  labs(x = "Variables", y = "Variables") +         # Títulos de los ejes
+  theme(plot.title = element_text(hjust = 0.5, size = 16),   # Centrar el título y ajustar tamaño
+        axis.title.x = element_text(size = 14),   # Tamaño del título del eje x
+        axis.title.y = element_text(size = 14))   # Tamaño del título del eje y
+
+```
+Podem observar que les variables d'altura i cintura tenen una correlació positiva molt alta respecte la resta, altres variables que també tenen una alta correlació positiva és el pes amb l'altura i cintura, fet del qual té prou sentit. D'altra banda, podem veure que la grasa corporal té una alta correlació negativa amb el pes, l'altura i la cintura.
+
+
+```{r, include=FALSE}
 ggpairs(
   datos, 
-  aes(color = factor(sexo), alpha = 0.7),
+  aes(color = sexo, alpha = 0.7),
   upper = list(continuous = wrap("cor", size = 3)),  # Tamaño del texto de correlación
   diag = list(continuous = wrap("densityDiag")),
   lower = list(continuous = wrap("points", size = 0.5))
@@ -70,14 +94,15 @@ ggpairs(
     strip.text = element_text(size = 8),
     axis.text = element_text(size = 7)
   )
-
+```
+```{r, echo=FALSE}
+ggpairs(datos,aes(color=sexo, alpha=0.5))
 ```
 
-Analicemos primero las variables de forma individual.
+Analitzem primer les variables de forma individual.
 
--   Todas las variables parecen seguir una distribución normal.
--   En algunas variables, observamos la presencia de algunos valores bastante superiores o inferiores que el resto (outliers). Lo deberemos tener en cuenta próximamente para realizar el clustering.
--   Al separar los datos en función del sexo, observamos que en la **altura**, **peso** y **cintura**, la mujeres tienen valores superiores. Para la **cardera** y el **IMC** tienen valores similares. Y para la **grasa corporal** los hombres tienen valores superiores.
+-   Podem observar com la majoria pareixen seguir una distribució normal aproximada, però s'haurien de fer contratos d'hipòtesis per poder afirmar-ho.
+-   Separant les dades en funció del sexe observem que l'altura, el pes i la cintura tenen valors més alts en el cas dels homes, mentre que la majoria de dones tenen una grasa corporal superior. Els valors de la cadera i del IMC són similars als dos casos, encara que la mitjana continua sent major en el cas de les dones.
 
 En cuanto al análisis por pares tenemos
 
@@ -87,9 +112,9 @@ En cuanto al análisis por pares tenemos
     - La correlación negativa entre: **grasa corporal** y **altura**; **grasa corporal** y **peso** ; **grasa corporal** y **cintura**.
     - Mencionar que sorprende la baja correlación del **IMC** con la **altura** y el **peso**, ya que el IMC se calcula siguiendo la fórmula $IMC = \frac{peso}{altura^2}$.
     
-```{r}
+```{r, include=FALSE}
 # Calcular la matriz de distancia
-distancia <- dist(datos_numericos, method = "euclidean")  # Cambia "euclidean" si prefieres otro método
+distancia <- dist(datos_numericos, method = "manhattan")  # Cambia "euclidean" si prefieres otro método
 
 # Visualizar el mapa de calor de distancias
 fviz_dist(as.dist(distancia), 
@@ -104,32 +129,11 @@ fviz_dist(as.dist(distancia),
 ```
 
 
-```{r}
-# Calcular la matriz de correlación
-matriz_correlacion <- cor(datos %>%
-                            select("altura","peso","cintura","cadera","IMC","grasa_corporal")
-                          )
-
-# Generar el gráfico de correlación
-ggcorrplot(matriz_correlacion, 
-           hc.order = TRUE,         # Ordenar jerárquicamente
-           type = "lower",          # Mostrar solo la mitad inferior
-           lab = TRUE,              # Añadir los valores de correlación
-           lab_size = 3.5,          # Tamaño del texto de los valores
-           colors = c("#4575b4", "#f7f7f7", "#d73027")) +  # Colores personalizados
-  ggtitle("Mapa de Correlación de Variables") +    # Añadir título
-  labs(x = "Variables", y = "Variables") +         # Títulos de los ejes
-  theme(plot.title = element_text(hjust = 0.5, size = 16),   # Centrar el título y ajustar tamaño
-        axis.title.x = element_text(size = 14),   # Tamaño del título del eje x
-        axis.title.y = element_text(size = 14))   # Tamaño del título del eje y
-
-```
-
-**Metodo codo+ visualtización de cluster con diferentes distancias**
+## Mètode codo i visualtizació de cluster amb diferents distáncies
 
 Similar al ejemplo 5.2.5 al tener datos con procedemos a escalarlos, usaremos el método del codo para obtener el número de clusters óptimo. Primero probaremos usando la distáncia euclidea.
 
-```{r}
+```{r, echo=FALSE}
 escalado<-scale(datos_numericos)
 fviz_nbclust(x = escalado, FUNcluster = kmeans, method = "wss",
              diss = dist(datos, method = "euclidean")) +
@@ -138,14 +142,14 @@ fviz_nbclust(x = escalado, FUNcluster = kmeans, method = "wss",
 
 Parece razonable pues escoger $k=4$ como número de clusters, ahora fijemos una semilla i veamos si los datos se comportan bien con este número de clusters. También calcularemos los puntos iniciales del algoritmo.
 
-```{r}
+```{r, echo=FALSE}
 set.seed(10)
 centro_cluster<-kmeans(x=escalado,centers = 4,nstart = 25)
 ```
 
 Al tener en total 6 variables el código reducirá la dimensión de estos usando sus dos primeras componenetes principales.
 
-```{r}
+```{r, echo=FALSE}
 fviz_cluster(object = centro_cluster, data = escalado, show.clust.cent = TRUE,
              ellipse.type = "euclid", star.plot = TRUE, repel = TRUE) +
   theme_bw() + theme(legend.position = "none")
@@ -153,7 +157,7 @@ fviz_cluster(object = centro_cluster, data = escalado, show.clust.cent = TRUE,
 
 De manera directa podemos ver que entre el verde y rojo hay muchissimos valores solapados, lo que nos indica que un valor menor de clusters implicará un mejor resultado, al haber intersecciones tanto en los clusters azul-lila como verde-rojo veamos como resulta el clustering con $k=2$.
 
-```{r}
+```{r, echo=FALSE}
 centro_cluster_1<-kmeans(x=escalado,centers = 2,nstart = 25)
 fviz_cluster(object = centro_cluster_1, data = escalado, show.clust.cent = TRUE,
              ellipse.type = "euclid", star.plot = TRUE, repel = TRUE) +
@@ -164,14 +168,14 @@ Este clustering nos definiria dos tipos de cuerpo pero debemos notar que la vari
 
 Al tener valores lejanos el metodo "manhattan" resultará mas apto para el cálculo del número de clusters
 
-```{r}
+```{r, echo=FALSE}
 fviz_nbclust(x = escalado, FUNcluster = pam, method = "wss",
              diss = dist(datos, method = "manhattan"))
 ```
 
 Para encontrar los clusters por k-medoides usaremos la función "pam" con $k=2$, de nuevo usamos la metrica "manhattan" por la presencia de dispersión entre valores.
 
-```{r}
+```{r, echo=FALSE}
 medoide_clusters <- pam(x = escalado, k = 2, metric = "manhattan")
 medoide_clusters
 ```
@@ -180,7 +184,7 @@ Aqui falta fer una explicació del que es veu aquí!!!!!!!!!!!!
 
 Veamos una representación gráfica del clustering dado por la función "pam":
 
-```{r}
+```{r, echo=FALSE}
 fviz_cluster(object = medoide_clusters, data = escalado, ellipse.type = "t", repel = TRUE) +
   theme_bw() + theme(legend.position = "none")
 ```
@@ -193,7 +197,7 @@ fviz_nbclust(x = mios, FUNcluster = pam, method = "wss",
              diss = dist(datos, method = "manhattan"))
 ```
 
-Por el metodo del codo el valor $k=2$ dará los mejores resultados además de evitar solapamientos como antes.
+Por el método del codo el valor $k=2$ dará los mejores resultados además de evitar solapamientos como antes.
 
 ```{r}
 medoide_clusters <- pam(x = mios, k = 2, metric = "manhattan")
@@ -208,7 +212,7 @@ medoide_clusters
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 datos <- datos %>%
   mutate(cluster = medoide_clusters$clustering)
 
@@ -219,8 +223,5 @@ tabla_contingencia <- table(datos$sexo, datos$cluster)
 print(tabla_contingencia)
 
 ```
-Por hacer:
--   **Explicar que el cluster ha sido capaz de separar entre hombres y mujeres**
--   **Analizar que les pasa a los individuos con no se han separado (Ej. quizá es un hombre más alto que el resto)**
-
+D'ací podem veure que el cluster ha aconseguit separar d'una forma molt bona als homes de les dones. Tot i així hi ha alguns casos minoritàris excepcionals que poden ser deguts a la diversitat geneètica i al fet que poden existir persones amb altures anormals pel que estaria associat al seu sexe.
 
