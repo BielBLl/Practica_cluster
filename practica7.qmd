@@ -49,6 +49,8 @@ datos_numericos<-datos %>% select(2:7)
 
 # Anàlisi descriptiu de les dades
 
+[Enlace al GitHub](https://github.com/BielBLl/Practica_cluster)
+
 En aquest apartat tractarem de fer una visualització general de les dades i el seu comportament entre elles, com ara estudiar la seua correlació i mitjanes separat per sexe. A continuació mostrarem un parell de gràfiques on podrem veure el comportament de les nostres dades d'una forma més intuitiva i visual.
 
 ```{r, echo=FALSE}
@@ -128,13 +130,13 @@ fviz_dist(as.dist(distancia),
   )
 ```
 
-Las celdas azules indican observaciones con baja distancia, es decir, son valores similares entre sí. Las celdas rojas muestran observaciones con grandes distancias, ed decir, valores diferentes entre sí. Las celdas blancas representan valores intermedios de distancia.
+Las celdas azules indican observaciones con baja distancia, es decir, son valores similares entre sí. Las celdas rojas muestran observaciones con grandes distancias, es decir, valores diferentes entre sí. Las celdas blancas representan valores intermedios de distancia.
 
-Si se observan bloques azules a lo largo de la diagonal, esto indica la presencia de grupos de observaciones similares, lo que quiere decir que pueden ser posibles clústeres.
+Se observan bloques azules a lo largo de la diagonal, esto indica la presencia de grupos de observaciones similares, lo que quiere decir que pueden ser posibles clústeres.
 
 ## Mètode codo i visualtizació de cluster amb diferents distáncies
 
-Similar al ejemplo 5.2.5 al tener datos con procedemos a escalarlos, usaremos el método del codo para obtener el número de clusters óptimo. Primero probaremos usando la distáncia euclidea.
+Similar al ejemplo 5.2.5 al tener datos numéricos muy diferentes procedemos a escalarlos, usaremos el método del codo para obtener el número de clusters óptimo. Primero probaremos usando la distáncia euclidea.
 
 ```{r, echo=FALSE}
 escalado<-scale(datos_numericos)
@@ -143,7 +145,7 @@ fviz_nbclust(x = escalado, FUNcluster = kmeans, method = "wss",
   geom_vline(xintercept = 4, linetype = 2)
 ```
 
-Parece razonable pues escoger $k=4$ como número de clusters, ahora fijemos una semilla i veamos si los datos se comportan bien con este número de clusters. También calcularemos los puntos iniciales del algoritmo.
+Parece razonable pues escoger $k=4$ como número de clusters, ahora fijemos una semilla y veamos si los datos se comportan bien con este número de clusters. También calcularemos los puntos iniciales del algoritmo.
 
 ```{r, echo=FALSE}
 set.seed(10)
@@ -158,7 +160,7 @@ fviz_cluster(object = centro_cluster, data = escalado, show.clust.cent = TRUE,
   theme_bw() + theme(legend.position = "none")
 ```
 
-De manera directa podemos ver que entre el verde y rojo hay muchissimos valores solapados, lo que nos indica que un valor menor de clusters implicará un mejor resultado, al haber intersecciones tanto en los clusters azul-lila como verde-rojo veamos como resulta el clustering con $k=2$.
+De manera directa podemos ver que entre el verde y azul hay muchíssimos valores solapados, lo que nos indica que un valor menor de clusters implicará un mejor resultado, al haber intersecciones tanto en los clusters rojo-lila como verde-azul veamos como resulta el clustering con $k=2$.
 
 ```{r, echo=FALSE}
 centro_cluster_1<-kmeans(x=escalado,centers = 2,nstart = 25)
@@ -166,24 +168,23 @@ fviz_cluster(object = centro_cluster_1, data = escalado, show.clust.cent = TRUE,
              ellipse.type = "euclid", star.plot = TRUE, repel = TRUE) +
   theme_bw() + theme(legend.position = "none")
 ```
+Este clustering nos definiria dos tipos de cuerpos, pero debemos notar que la variabilidad definida por las componenetes principales es $56.8\%<75\%$, por lo que no seria un modelo muy fiable. Esta falta de variabilidad puede ser debido al uso de k-medias o la distancia euclidiana, como podemos notar hay muchos valores lejanos al centro del cluster, en este caso será mas robusto el uso de k-medoides, el qual tiene mejor en cuenta estos "outliers".
 
-Este clustering nos definiria dos tipos de cuerpo pero debemos notar que la variabilidad definida por las componenetes principales es $56.8\%<75\%$ por lo que no seria un modelo muy fiable. Esta falta de variabilidad puede ser debido al uso de k-medias o la distancia euclidiana, como podemos notar hay muchos valores lejanos al centro del cluster, en este caso será mas robusto el uso de k-medoides.
-
-Al tener valores lejanos el metodo "manhattan" resultará mas apto para el cálculo del número de clusters
+Al tener valores lejanos, el metodo "manhattan" resultará mas apto para el cálculo del número de clusters.
 
 ```{r, echo=FALSE}
 fviz_nbclust(x = escalado, FUNcluster = pam, method = "wss",
              diss = dist(datos, method = "manhattan"))
 ```
 
-Para encontrar los clusters por k-medoides usaremos la función "pam" con $k=2$, de nuevo usamos la metrica "manhattan" por la presencia de dispersión entre valores.
+Para encontrar los clusters por k-medoides usaremos la función "pam" con $k=2$, de nuevo usamos la metrica "manhattan" por la presencia de "outliers".
 
 ```{r, echo=FALSE}
 medoide_clusters <- pam(x = escalado, k = 2, metric = "manhattan")
 medoide_clusters
 ```
 
-El primer bloque muestra los medoides, los puntos centrales de cada clúster. Estos puntos son seleccionados para ser los más representativos de cada clúster..
+El primer bloque muestra los medoides, los puntos centrales de cada clúster. Estos puntos son seleccionados para ser los más representativos de cada clúster.
 
 El segundo bloque muestra el vector de clustering de las observaciones.Cada observación está asignada a un clúster. El vector contiene el número de clúster asignado a cada observación. Como tenemos que  $ k=2$, tenemos dos clústeres en total: el clúster 1 y el clúster 2.
 
@@ -198,7 +199,7 @@ fviz_cluster(object = medoide_clusters, data = escalado, ellipse.type = "t", rep
   theme_bw() + theme(legend.position = "none")
 ```
 
-Veamos si obviando algunas variables podemos encontrar un modelo que tenga mayor representación de variabilidad en las componenetes principales. Debido a la alta relación de las variables podemos ver con la matriz de corelaciones que las varaibles con mas peso son altura,peso y cintura. Por ejemplo el IMC está completamente definido por el peso y la altura.
+Veamos si obviando algunas variables podemos encontrar un modelo que tenga mayor representación de variabilidad en las componenetes principales. Debido a la alta relación de las variables podemos ver con la matriz de corelaciones que las varaibles con mas peso son altura,peso y cintura. Veamos si obtenemos un modelo viable solo escogiendo estas variables.
 
 ```{r}
 mios<-datos %>% select("altura","peso","cintura")
@@ -210,7 +211,6 @@ Por el método del codo el valor $k=2$ dará los mejores resultados además de e
 
 ```{r}
 medoide_clusters <- pam(x = mios, k = 2, metric = "manhattan")
-medoide_clusters
 fviz_cluster(object = medoide_clusters, data = mios, ellipse.type = "t", repel = TRUE) +
   theme_bw() + theme(legend.position = "none")
 ```
@@ -219,14 +219,15 @@ Así obtenemos una variabilidad total de $83.6\%$ con un solapamiento tolerable 
 ```{r, echo=FALSE}
 medoide_clusters
 ```
+Aquí, igual que en el modelo anterior, tenemos una representación de los centros de los clusters. Veamos con la matriz de confusión si los valores estan bien divididos entre mujer y hombre.
 
-
+La siguiente matriz hace referencia al modelo k-medoide usando la distancia "manhattan".
 ```{r, echo=FALSE}
-datos <- datos %>%
+datos_1 <- datos %>%
   mutate(cluster = medoide_clusters$clustering)
 
 # Crear tabla de contingencia
-tabla_contingencia <- table(datos$sexo, datos$cluster)
+tabla_contingencia <- table(datos_1$sexo, datos_1$cluster)
 
 # Ver la tabla
 print(tabla_contingencia)

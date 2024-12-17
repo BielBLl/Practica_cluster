@@ -6,9 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2024-12-16">
+<meta name="author" content="Biel Bauzà, Marc Arrom, Eulàlia Tous i Rebeca Payà">
+<meta name="dcterms.date" content="2024-12-17">
 
-<title>Ejercicios para exponer</title>
+<title>Problema 5</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -109,9 +110,11 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#problema-5---enunciado" id="toc-problema-5---enunciado" class="nav-link active" data-scroll-target="#problema-5---enunciado">Problema 5 - Enunciado</a></li>
-  <li><a href="#librerias-y-carga-de-datos" id="toc-librerias-y-carga-de-datos" class="nav-link" data-scroll-target="#librerias-y-carga-de-datos">Librerias y carga de datos</a></li>
-  <li><a href="#analisis-descriptivo-de-los-datos" id="toc-analisis-descriptivo-de-los-datos" class="nav-link" data-scroll-target="#analisis-descriptivo-de-los-datos">Analisis descriptivo de los datos</a></li>
+  <li><a href="#enunciat" id="toc-enunciat" class="nav-link active" data-scroll-target="#enunciat">Enunciat</a></li>
+  <li><a href="#anàlisi-descriptiu-de-les-dades" id="toc-anàlisi-descriptiu-de-les-dades" class="nav-link" data-scroll-target="#anàlisi-descriptiu-de-les-dades">Anàlisi descriptiu de les dades</a>
+  <ul class="collapse">
+  <li><a href="#mètode-codo-i-visualtizació-de-cluster-amb-diferents-distáncies" id="toc-mètode-codo-i-visualtizació-de-cluster-amb-diferents-distáncies" class="nav-link" data-scroll-target="#mètode-codo-i-visualtizació-de-cluster-amb-diferents-distáncies">Mètode codo i visualtizació de cluster amb diferents distáncies</a></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -119,7 +122,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Ejercicios para exponer</h1>
+<h1 class="title">Problema 5</h1>
 <p class="subtitle lead">20582- Análisis de Datos para el GMAT</p>
 </div>
 
@@ -127,11 +130,17 @@ window.Quarto = {
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Biel Bauzà, Marc Arrom, Eulàlia Tous i Rebeca Payà </p>
+          </div>
+  </div>
     
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">December 16, 2024</p>
+      <p class="date">December 17, 2024</p>
     </div>
   </div>
   
@@ -143,8 +152,8 @@ window.Quarto = {
 </header>
 
 
-<section id="problema-5---enunciado" class="level2">
-<h2 class="anchored" data-anchor-id="problema-5---enunciado">Problema 5 - Enunciado</h2>
+<section id="enunciat" class="level2">
+<h2 class="anchored" data-anchor-id="enunciat">Enunciat</h2>
 <p>La tabla de <a href="https://github.com/igmuib/Practica_AD/blob/main/datos_antropometricos.csv">datos_antropométricos</a> presenta un conjunto de datos simulados que recopila información sobre 200 observaciones de hombres y mujeres. Este conjunto incluye las siguientes variables:</p>
 <ul>
 <li><code>altura</code>: Altura en centímetros</li>
@@ -156,57 +165,11 @@ window.Quarto = {
 </ul>
 <p>Presentad un análisis exploratorio de los datos junto con un resumen de lo observado en el contexto del problema. Aplicad técnicas de clustering para agrupar individuos que tengan formas de cuerpos semejantes. Escribid una conclusión del análisis realizado en el contexto del problema</p>
 </section>
-<section id="librerias-y-carga-de-datos" class="level1">
-<h1>Librerias y carga de datos</h1>
+<section id="anàlisi-descriptiu-de-les-dades" class="level1">
+<h1>Anàlisi descriptiu de les dades</h1>
+<p><a href="https://github.com/BielBLl/Practica_cluster">Enlace al GitHub</a></p>
+<p>En aquest apartat tractarem de fer una visualització general de les dades i el seu comportament entre elles, com ara estudiar la seua correlació i mitjanes separat per sexe. A continuació mostrarem un parell de gràfiques on podrem veure el comportament de les nostres dades d’una forma més intuitiva i visual.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr) <span class="co"># Para lectura de datos csv.</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggcorrplot) <span class="co"># Para la creación del gráfico de correlación</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GGally) <span class="co"># Para comparar variables a pares (ggpairs)</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales) <span class="co"># Para editar gráficos (cambiar ancho del histograma)</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(factoextra) <span class="co"># Para hacer el mapa de calor y usar el metodo del codo </span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cluster)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"datos_antropometricos.csv"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(datos)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 7
-  sexo   altura  peso cintura cadera   IMC grasa_corporal
-  &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;          &lt;dbl&gt;
-1 Hombre   171. 100.     89.4  103.   26.1          15.0 
-2 Hombre   173.  91.1    80.6   94.8  23.0          14.8 
-3 Hombre   186.  75.4    84.9   94.8  27.6          19.9 
-4 Hombre   175.  83.4    89.8   84.4  28.5          19.3 
-5 Hombre   176.  73.9    95.4  101.   25.8           7.25
-6 Hombre   187.  73.2    76.8   93.5  25.4          25.2 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>datos_numericos<span class="ot">&lt;-</span>datos <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="analisis-descriptivo-de-los-datos" class="level1">
-<h1>Analisis descriptivo de los datos</h1>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpairs</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  datos, </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">color =</span> <span class="fu">factor</span>(sexo), <span class="at">alpha =</span> <span class="fl">0.7</span>),</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">upper =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"cor"</span>, <span class="at">size =</span> <span class="dv">3</span>)),  <span class="co"># Tamaño del texto de correlación</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">diag =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"densityDiag"</span>)),</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"points"</span>, <span class="at">size =</span> <span class="fl">0.5</span>))</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Set2"</span>, <span class="at">name =</span> <span class="st">"Sexo"</span>) <span class="sc">+</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Gráfico de Pares por Sexo"</span>,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Relación entre variables en función del sexo"</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">7</span>)</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -215,11 +178,20 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Analicemos primero las variables de forma individual.</p>
+<p>Podem observar que les variables d’altura i cintura tenen una correlació positiva molt alta respecte la resta, altres variables que també tenen una alta correlació positiva és el pes amb l’altura i cintura, fet del qual té prou sentit. D’altra banda, podem veure que la grasa corporal té una alta correlació negativa amb el pes, l’altura i la cintura.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="practica7_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Analitzem primer les variables de forma individual.</p>
 <ul>
-<li>Todas las variables parecen seguir una distribución normal.</li>
-<li>En algunas variables, observamos la presencia de algunos valores bastante superiores o inferiores que el resto (outliers). Lo deberemos tener en cuenta próximamente para realizar el clustering.</li>
-<li>Al separar los datos en función del sexo, observamos que en la <strong>altura</strong>, <strong>peso</strong> y <strong>cintura</strong>, la mujeres tienen valores superiores. Para la <strong>cardera</strong> y el <strong>IMC</strong> tienen valores similares. Y para la <strong>grasa corporal</strong> los hombres tienen valores superiores.</li>
+<li>Podem observar com la majoria pareixen seguir una distribució normal aproximada, però s’haurien de fer contratos d’hipòtesis per poder afirmar-ho.</li>
+<li>Separant les dades en funció del sexe observem que l’altura, el pes i la cintura tenen valors més alts en el cas dels homes, mentre que la majoria de dones tenen una grasa corporal superior. Els valors de la cadera i del IMC són similars als dos casos, encara que la mitjana continua sent major en el cas de les dones.</li>
 </ul>
 <p>En cuanto al análisis por pares tenemos</p>
 <ul>
@@ -232,60 +204,6 @@ window.Quarto = {
 </ul></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular la matriz de distancia</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>distancia <span class="ot">&lt;-</span> <span class="fu">dist</span>(datos_numericos, <span class="at">method =</span> <span class="st">"euclidean"</span>)  <span class="co"># Cambia "euclidean" si prefieres otro método</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar el mapa de calor de distancias</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_dist</span>(<span class="fu">as.dist</span>(distancia), </span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">gradient =</span> <span class="fu">list</span>(<span class="at">low =</span> <span class="st">"blue"</span>, <span class="at">mid =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"red"</span>),</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">lab_size =</span> <span class="dv">8</span>) <span class="sc">+</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Mapa de Calor de Distancias"</span>) <span class="sc">+</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()<span class="sc">+</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_blank</span>(), <span class="co"># Quitar texto del eje X</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_blank</span>()</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="practica7_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular la matriz de correlación</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>matriz_correlacion <span class="ot">&lt;-</span> <span class="fu">cor</span>(datos <span class="sc">%&gt;%</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">select</span>(<span class="st">"altura"</span>,<span class="st">"peso"</span>,<span class="st">"cintura"</span>,<span class="st">"cadera"</span>,<span class="st">"IMC"</span>,<span class="st">"grasa_corporal"</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                          )</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Generar el gráfico de correlación</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrplot</span>(matriz_correlacion, </span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">hc.order =</span> <span class="cn">TRUE</span>,         <span class="co"># Ordenar jerárquicamente</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">type =</span> <span class="st">"lower"</span>,          <span class="co"># Mostrar solo la mitad inferior</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">lab =</span> <span class="cn">TRUE</span>,              <span class="co"># Añadir los valores de correlación</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>           <span class="at">lab_size =</span> <span class="fl">3.5</span>,          <span class="co"># Tamaño del texto de los valores</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>           <span class="at">colors =</span> <span class="fu">c</span>(<span class="st">"#4575b4"</span>, <span class="st">"#f7f7f7"</span>, <span class="st">"#d73027"</span>)) <span class="sc">+</span>  <span class="co"># Colores personalizados</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Mapa de Correlación de Variables"</span>) <span class="sc">+</span>    <span class="co"># Añadir título</span></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Variables"</span>, <span class="at">y =</span> <span class="st">"Variables"</span>) <span class="sc">+</span>         <span class="co"># Títulos de los ejes</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">16</span>),   <span class="co"># Centrar el título y ajustar tamaño</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),   <span class="co"># Tamaño del título del eje x</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>))   <span class="co"># Tamaño del título del eje y</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="practica7_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p><strong>Metodo codo+ visualtización de cluster con diferentes distancias</strong></p>
-<p>Similar al ejemplo 5.2.5 al tener datos con procedemos a escalarlos, usaremos el método del codo para obtener el número de clusters óptimo. Primero probaremos usando la distáncia euclidea.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>escalado<span class="ot">&lt;-</span><span class="fu">scale</span>(datos_numericos)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(<span class="at">x =</span> escalado, <span class="at">FUNcluster =</span> kmeans, <span class="at">method =</span> <span class="st">"wss"</span>,</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">diss =</span> <span class="fu">dist</span>(datos, <span class="at">method =</span> <span class="st">"euclidean"</span>)) <span class="sc">+</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">4</span>, <span class="at">linetype =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -294,30 +212,23 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Parece razonable pues escoger <span class="math inline">\(k=4\)</span> como número de clusters, ahora fijemos una semilla i veamos si los datos se comportan bien con este número de clusters. También calcularemos los puntos iniciales del algoritmo.</p>
+<p>Las celdas azules indican observaciones con baja distancia, es decir, son valores similares entre sí. Las celdas rojas muestran observaciones con grandes distancias, es decir, valores diferentes entre sí. Las celdas blancas representan valores intermedios de distancia.</p>
+<p>Se observan bloques azules a lo largo de la diagonal, esto indica la presencia de grupos de observaciones similares, lo que quiere decir que pueden ser posibles clústeres.</p>
+<section id="mètode-codo-i-visualtizació-de-cluster-amb-diferents-distáncies" class="level2">
+<h2 class="anchored" data-anchor-id="mètode-codo-i-visualtizació-de-cluster-amb-diferents-distáncies">Mètode codo i visualtizació de cluster amb diferents distáncies</h2>
+<p>Similar al ejemplo 5.2.5 al tener datos numéricos muy diferentes procedemos a escalarlos, usaremos el método del codo para obtener el número de clusters óptimo. Primero probaremos usando la distáncia euclidea.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">10</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>centro_cluster<span class="ot">&lt;-</span><span class="fu">kmeans</span>(<span class="at">x=</span>escalado,<span class="at">centers =</span> <span class="dv">4</span>,<span class="at">nstart =</span> <span class="dv">25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Al tener en total 6 variables el código reducirá la dimensión de estos usando sus dos primeras componenetes principales.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_cluster</span>(<span class="at">object =</span> centro_cluster, <span class="at">data =</span> escalado, <span class="at">show.clust.cent =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">ellipse.type =</span> <span class="st">"euclid"</span>, <span class="at">star.plot =</span> <span class="cn">TRUE</span>, <span class="at">repel =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="practica7_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="practica7_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>De manera directa podemos ver que entre el verde y rojo hay muchissimos valores solapados, lo que nos indica que un valor menor de clusters implicará un mejor resultado, al haber intersecciones tanto en los clusters azul-lila como verde-rojo veamos como resulta el clustering con <span class="math inline">\(k=2\)</span>.</p>
+<p>Parece razonable pues escoger <span class="math inline">\(k=4\)</span> como número de clusters, ahora fijemos una semilla y veamos si los datos se comportan bien con este número de clusters. También calcularemos los puntos iniciales del algoritmo.</p>
+<p>Al tener en total 6 variables el código reducirá la dimensión de estos usando sus dos primeras componenetes principales.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>centro_cluster_1<span class="ot">&lt;-</span><span class="fu">kmeans</span>(<span class="at">x=</span>escalado,<span class="at">centers =</span> <span class="dv">2</span>,<span class="at">nstart =</span> <span class="dv">25</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_cluster</span>(<span class="at">object =</span> centro_cluster_1, <span class="at">data =</span> escalado, <span class="at">show.clust.cent =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">ellipse.type =</span> <span class="st">"euclid"</span>, <span class="at">star.plot =</span> <span class="cn">TRUE</span>, <span class="at">repel =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -326,11 +237,8 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Este clustering nos definiria dos tipos de cuerpo pero debemos notar que la variabilidad definida por las componenetes principales es <span class="math inline">\(56.8\%&lt;75\%\)</span> por lo que no seria un modelo muy fiable. Esta falta de variabilidad puede ser debido al uso de k-medias o la distancia euclidiana, como podemos notar hay muchos valores lejanos al centro del cluster, en este caso será mas robusto el uso de k-medoides.</p>
-<p>Al tener valores lejanos el metodo “manhattan” resultará mas apto para el cálculo del número de clusters</p>
+<p>De manera directa podemos ver que entre el verde y azul hay muchíssimos valores solapados, lo que nos indica que un valor menor de clusters implicará un mejor resultado, al haber intersecciones tanto en los clusters rojo-lila como verde-azul veamos como resulta el clustering con <span class="math inline">\(k=2\)</span>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(<span class="at">x =</span> escalado, <span class="at">FUNcluster =</span> pam, <span class="at">method =</span> <span class="st">"wss"</span>,</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">diss =</span> <span class="fu">dist</span>(datos, <span class="at">method =</span> <span class="st">"manhattan"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -339,10 +247,19 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Para encontrar los clusters por k-medoides usaremos la función “pam” con <span class="math inline">\(k=2\)</span>, de nuevo usamos la metrica “manhattan” por la presencia de dispersión entre valores.</p>
+<p>Este clustering nos definiria dos tipos de cuerpos, pero debemos notar que la variabilidad definida por las componenetes principales es <span class="math inline">\(56.8\%&lt;75\%\)</span>, por lo que no seria un modelo muy fiable. Esta falta de variabilidad puede ser debido al uso de k-medias o la distancia euclidiana, como podemos notar hay muchos valores lejanos al centro del cluster, en este caso será mas robusto el uso de k-medoides, el qual tiene mejor en cuenta estos “outliers”.</p>
+<p>Al tener valores lejanos, el metodo “manhattan” resultará mas apto para el cálculo del número de clusters.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>medoide_clusters <span class="ot">&lt;-</span> <span class="fu">pam</span>(<span class="at">x =</span> escalado, <span class="at">k =</span> <span class="dv">2</span>, <span class="at">metric =</span> <span class="st">"manhattan"</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>medoide_clusters</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="practica7_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Para encontrar los clusters por k-medoides usaremos la función “pam” con <span class="math inline">\(k=2\)</span>, de nuevo usamos la metrica “manhattan” por la presencia de “outliers”.</p>
+<div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>Medoids:
       ID     altura       peso    cintura     cadera        IMC grasa_corporal
@@ -369,24 +286,12 @@ Available components:
  [6] "clusinfo"   "silinfo"    "diss"       "call"       "data"      </code></pre>
 </div>
 </div>
-<p>Aqui falta fer una explicació del que es veu aquí!!!!!!!!!!!!</p>
+<p>El primer bloque muestra los medoides, los puntos centrales de cada clúster. Estos puntos son seleccionados para ser los más representativos de cada clúster.</p>
+<p>El segundo bloque muestra el vector de clustering de las observaciones.Cada observación está asignada a un clúster. El vector contiene el número de clúster asignado a cada observación. Como tenemos que $ k=2$, tenemos dos clústeres en total: el clúster 1 y el clúster 2.</p>
+<p>En el tercer bloque vemos los valores de build y swap. Build nos indica el valor de la suma total de las distancias entre las observaciones y los centros de los clústeres. Swap es el valor de la suma total de las distancias después de que el algoritmo intenta mejorar el clustering al intercambiar los centros de los clústers.</p>
+<p>El valor de la función objetivo ha disminuido de 4.258150 a 3.916516 después de realizar el cambio de los medoids. Esto indica que el algoritmo ha logrado una mejor asignación de los clústeres al minimizar la suma de las distancias dentro de los clústeres.</p>
 <p>Veamos una representación gráfica del clustering dado por la función “pam”:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_cluster</span>(<span class="at">object =</span> medoide_clusters, <span class="at">data =</span> escalado, <span class="at">ellipse.type =</span> <span class="st">"t"</span>, <span class="at">repel =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="practica7_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Veamos si obviando algunas variables podemos encontrar un modelo que tenga mayor representación de variabilidad en las componenetes principales. Debido a la alta relación de las variables podemos ver con la matriz de corelaciones que las varaibles con mas peso son altura,peso y cintura. Por ejemplo el IMC está completamente definido por el peso y la altura.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>mios<span class="ot">&lt;-</span>datos <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="st">"altura"</span>,<span class="st">"peso"</span>,<span class="st">"cintura"</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(<span class="at">x =</span> mios, <span class="at">FUNcluster =</span> pam, <span class="at">method =</span> <span class="st">"wss"</span>,</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">diss =</span> <span class="fu">dist</span>(datos, <span class="at">method =</span> <span class="st">"manhattan"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -395,37 +300,11 @@ Available components:
 </div>
 </div>
 </div>
-<p>Por el metodo del codo el valor <span class="math inline">\(k=2\)</span> dará los mejores resultados además de evitar solapamientos como antes.</p>
+<p>Veamos si obviando algunas variables podemos encontrar un modelo que tenga mayor representación de variabilidad en las componenetes principales. Debido a la alta relación de las variables podemos ver con la matriz de corelaciones que las varaibles con mas peso son altura,peso y cintura. Veamos si obtenemos un modelo viable solo escogiendo estas variables.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>medoide_clusters <span class="ot">&lt;-</span> <span class="fu">pam</span>(<span class="at">x =</span> mios, <span class="at">k =</span> <span class="dv">2</span>, <span class="at">metric =</span> <span class="st">"manhattan"</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>medoide_clusters</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Medoids:
-      ID altura  peso cintura
-[1,]  99 173.35 78.21   92.91
-[2,] 325 163.24 64.93   76.52
-Clustering vector:
-  [1] 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 2 1
- [38] 1 1 1 2 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2
- [75] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 2 1 2 2 1 1 1
-[112] 1 2 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 2 1 1 1 2 1 1 1 1 1 1 2 1 1 2 1
-[149] 1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 1
-[186] 1 1 2 1 1 2 1 1 1 1 1 1 2 1 1 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 1
-[223] 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
-[260] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2
-[297] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2
-[334] 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
-[371] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
-Objective function:
-  build    swap 
-18.6294 17.3553 
-
-Available components:
- [1] "medoids"    "id.med"     "clustering" "objective"  "isolation" 
- [6] "clusinfo"   "silinfo"    "diss"       "call"       "data"      </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_cluster</span>(<span class="at">object =</span> medoide_clusters, <span class="at">data =</span> mios, <span class="at">ellipse.type =</span> <span class="st">"t"</span>, <span class="at">repel =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mios<span class="ot">&lt;-</span>datos <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="st">"altura"</span>,<span class="st">"peso"</span>,<span class="st">"cintura"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(<span class="at">x =</span> mios, <span class="at">FUNcluster =</span> pam, <span class="at">method =</span> <span class="st">"wss"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">diss =</span> <span class="fu">dist</span>(datos, <span class="at">method =</span> <span class="st">"manhattan"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -434,9 +313,21 @@ Available components:
 </div>
 </div>
 </div>
+<p>Por el método del codo el valor <span class="math inline">\(k=2\)</span> dará los mejores resultados además de evitar solapamientos como antes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>medoide_clusters <span class="ot">&lt;-</span> <span class="fu">pam</span>(<span class="at">x =</span> mios, <span class="at">k =</span> <span class="dv">2</span>, <span class="at">metric =</span> <span class="st">"manhattan"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_cluster</span>(<span class="at">object =</span> medoide_clusters, <span class="at">data =</span> mios, <span class="at">ellipse.type =</span> <span class="st">"t"</span>, <span class="at">repel =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="practica7_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 <p>Así obtenemos una variabilidad total de <span class="math inline">\(83.6\%\)</span> con un solapamiento tolerable comparado con los valores de <span class="math inline">\(k\)</span> mayores.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>medoide_clusters</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Medoids:
       ID altura  peso cintura
@@ -463,15 +354,9 @@ Available components:
  [6] "clusinfo"   "silinfo"    "diss"       "call"       "data"      </code></pre>
 </div>
 </div>
+<p>Aquí, igual que en el modelo anterior, tenemos una representación de los centros de los clusters. Veamos con la matriz de confusión si los valores estan bien divididos entre mujer y hombre.</p>
+<p>La siguiente matriz hace referencia al modelo k-medoide usando la distancia “manhattan”.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>datos <span class="ot">&lt;-</span> datos <span class="sc">%&gt;%</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cluster =</span> medoide_clusters<span class="sc">$</span>clustering)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear tabla de contingencia</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>tabla_contingencia <span class="ot">&lt;-</span> <span class="fu">table</span>(datos<span class="sc">$</span>sexo, datos<span class="sc">$</span>cluster)</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Ver la tabla</span></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tabla_contingencia)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        
            1   2
@@ -479,7 +364,9 @@ Available components:
   Mujer    6 194</code></pre>
 </div>
 </div>
-<p>Por hacer: - <strong>Explicar que el cluster ha sido capaz de separar entre hombres y mujeres</strong> - <strong>Analizar que les pasa a los individuos con no se han separado (Ej. quizá es un hombre más alto que el resto)</strong></p>
+<p>Esto nos indica que hay 178 hombres en el clúster 1 y 22 hombres en el clúster 2. Ademas, hay 6 mujeres en el clúster 1 y 194 mujeres en el clúster 2. Como la mayoría de los hombres se encuentran en un clúster y la mayoría de las mujeres en el otro, se puede ver una clara separación entre los sexos en los diferentes clústers. Esto indicaría que el modelo ha logrado identificar diferencias entre sexos y ha agrupado las observaciones en función de estas diferencias.</p>
+<p>Por lo tanto podemos deducir que el cluster ha conseguido separar los sexo de una forma bastante buena. Así y todo hay algunos casos minoritarios excepcionales que pueden ser debidos a la diversidad genética y al hecho que pueden existir personas con alturas anormales para lo que estaria asociado a su sexo.</p>
+</section>
 </section>
 
 </main>
