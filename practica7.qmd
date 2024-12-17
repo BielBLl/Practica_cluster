@@ -112,7 +112,7 @@ En cuanto al análisis por pares tenemos
     - La correlación negativa entre: **grasa corporal** y **altura**; **grasa corporal** y **peso** ; **grasa corporal** y **cintura**.
     - Mencionar que sorprende la baja correlación del **IMC** con la **altura** y el **peso**, ya que el IMC se calcula siguiendo la fórmula $IMC = \frac{peso}{altura^2}$.
     
-```{r, include=FALSE}
+```{r, echo=FALSE}
 # Calcular la matriz de distancia
 distancia <- dist(datos_numericos, method = "manhattan")  # Cambia "euclidean" si prefieres otro método
 
@@ -128,6 +128,9 @@ fviz_dist(as.dist(distancia),
   )
 ```
 
+Las celdas azules indican observaciones con baja distancia, es decir, son valores similares entre sí. Las celdas rojas muestran observaciones con grandes distancias, ed decir, valores diferentes entre sí. Las celdas blancas representan valores intermedios de distancia.
+
+Si se observan bloques azules a lo largo de la diagonal, esto indica la presencia de grupos de observaciones similares, lo que quiere decir que pueden ser posibles clústeres.
 
 ## Mètode codo i visualtizació de cluster amb diferents distáncies
 
@@ -180,7 +183,13 @@ medoide_clusters <- pam(x = escalado, k = 2, metric = "manhattan")
 medoide_clusters
 ```
 
-Aqui falta fer una explicació del que es veu aquí!!!!!!!!!!!!
+El primer bloque muestra los medoides, los puntos centrales de cada clúster. Estos puntos son seleccionados para ser los más representativos de cada clúster..
+
+El segundo bloque muestra el vector de clustering de las observaciones.Cada observación está asignada a un clúster. El vector contiene el número de clúster asignado a cada observación. Como tenemos que  $ k=2$, tenemos dos clústeres en total: el clúster 1 y el clúster 2.
+
+En el tercer bloque vemos los valores de build y swap. Build nos indica el valor de la suma total de las distancias entre las observaciones y los centros de los clústeres. Swap es el valor de la suma total de las distancias después de que el algoritmo intenta mejorar el clustering al intercambiar los centros de los clústers.
+
+El valor de la función objetivo ha disminuido de 4.258150 a 3.916516 después de realizar el cambio de los medoids. Esto indica que el algoritmo ha logrado una mejor asignación de los clústeres al minimizar la suma de las distancias dentro de los clústeres.
 
 Veamos una representación gráfica del clustering dado por la función "pam":
 
@@ -207,7 +216,7 @@ fviz_cluster(object = medoide_clusters, data = mios, ellipse.type = "t", repel =
 ```
 Así obtenemos una variabilidad total de $83.6\%$ con un solapamiento tolerable comparado con los valores de $k$ mayores.
 
-```{r}
+```{r, echo=FALSE}
 medoide_clusters
 ```
 
@@ -223,5 +232,7 @@ tabla_contingencia <- table(datos$sexo, datos$cluster)
 print(tabla_contingencia)
 
 ```
-D'ací podem veure que el cluster ha aconseguit separar d'una forma molt bona als homes de les dones. Tot i així hi ha alguns casos minoritàris excepcionals que poden ser deguts a la diversitat geneètica i al fet que poden existir persones amb altures anormals pel que estaria associat al seu sexe.
 
+Esto nos indica que hay 178 hombres en el clúster 1 y 22 hombres en el clúster 2. Ademas, hay 6 mujeres en el clúster 1 y 194 mujeres en el clúster 2. Como la mayoría de los hombres se encuentran en un clúster y la mayoría de las mujeres en el otro, se puede ver una clara separación entre los sexos en los diferentes clústers. Esto indicaría que el modelo ha logrado identificar diferencias entre sexos y ha agrupado las observaciones en función de estas diferencias.
+
+Por lo tanto podemos deducir que el cluster ha conseguido separar los sexo de una forma bastante buena. Así y todo hay algunos casos minoritarios excepcionales que pueden ser debidos a la diversidad genética y al hecho que pueden existir personas con alturas anormales para lo que estaria asociado a su sexo.
