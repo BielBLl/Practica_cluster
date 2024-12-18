@@ -47,11 +47,11 @@ head(datos)
 datos_numericos<-datos %>% select(2:7)
 ```
 
-# Anàlisi descriptiu de les dades
+# Análisis descriptivo de los datos
 
 [Enlace al GitHub](https://github.com/BielBLl/Practica_cluster)
 
-En aquest apartat tractarem de fer una visualització general de les dades i el seu comportament entre elles, com ara estudiar la seua correlació i mitjanes separat per sexe. A continuació mostrarem un parell de gràfiques on podrem veure el comportament de les nostres dades d'una forma més intuitiva i visual.
+En este apartado trataremos de hacer una visualización general de los datos y su comportamiento entre ellos, como por ejemplo estudiar su correlación y medias separadas por sexo. A continuación, mostraremos un par de gráficos donde podremos observar el comportamiento de nuestros datos de una forma más intuitiva y visual.
 
 ```{r, echo=FALSE}
 # Calcular la matriz de correlación
@@ -73,18 +73,18 @@ ggcorrplot(matriz_correlacion,
         axis.title.y = element_text(size = 14))   # Tamaño del título del eje y
 
 ```
-Podem observar que les variables d'altura i cintura tenen una correlació positiva molt alta respecte la resta, altres variables que també tenen una alta correlació positiva és el pes amb l'altura i cintura, fet del qual té prou sentit. D'altra banda, podem veure que la grasa corporal té una alta correlació negativa amb el pes, l'altura i la cintura.
 
 
-```{r, include=FALSE}
+Podemos observar que las variables de altura y cintura tienen una correlación positiva muy alta respecto al resto. Otras variables que también tienen una alta correlación positiva son el peso con la altura y la cintura, algo que tiene bastante sentido. Por otro lado, podemos ver que el indice de grasa corporal tiene una alta correlación negativa con el peso, la altura y la cintura.
+
+```{r, echo =FALSE}
 ggpairs(
   datos, 
-  aes(color = sexo, alpha = 0.7),
-  upper = list(continuous = wrap("cor", size = 3)),  # Tamaño del texto de correlación
+  aes(color = sexo, alpha = 0.8),
+  upper = list(continuous = wrap("cor", size = 3.1)),  # Tamaño del texto de correlación
   diag = list(continuous = wrap("densityDiag")),
   lower = list(continuous = wrap("points", size = 0.5))
 ) +
-  scale_color_brewer(palette = "Set2", name = "Sexo") +
   labs(
     title = "Gráfico de Pares por Sexo",
     subtitle = "Relación entre variables en función del sexo"
@@ -94,17 +94,15 @@ ggpairs(
     plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
     plot.subtitle = element_text(size = 10, hjust = 0.5),
     strip.text = element_text(size = 8),
-    axis.text = element_text(size = 7)
+    strip.background = element_rect(fill = "grey90", color = "grey80", alpha(0.3)), # Fondo gris y borde
+    axis.text = element_text(size = 6.9),
+    axis.text.x = element_text(size = 5.3)
   )
 ```
-```{r, echo=FALSE}
-ggpairs(datos,aes(color=sexo, alpha=0.5))
-```
+Analizamos primero las variables de forma individual.
 
-Analitzem primer les variables de forma individual.
-
--   Podem observar com la majoria pareixen seguir una distribució normal aproximada, però s'haurien de fer contratos d'hipòtesis per poder afirmar-ho.
--   Separant les dades en funció del sexe observem que l'altura, el pes i la cintura tenen valors més alts en el cas dels homes, mentre que la majoria de dones tenen una grasa corporal superior. Els valors de la cadera i del IMC són similars als dos casos, encara que la mitjana continua sent major en el cas de les dones.
+-   Podemos observar que la mayoría parecen seguir una distribución normal aproximada, pero sería necesario realizar contrastes de hipótesis para poder afirmarlo.
+-   Separando los datos en función del sexo, observamos que la **altura**, el **peso** y la **cintura** tienen valores más altos en el caso de los hombres, mientras que la mayoría de mujeres tienen un **porcentaje de grasa corporal** superior. Los valores de la **cadera** y del **IMC** son similares en ambos casos, aunque la media sigue siendo mayor en el caso de las mujeres.
 
 En cuanto al análisis por pares tenemos
 
@@ -134,7 +132,7 @@ Las celdas azules indican observaciones con baja distancia, es decir, son valore
 
 Se observan bloques azules a lo largo de la diagonal, esto indica la presencia de grupos de observaciones similares, lo que quiere decir que pueden ser posibles clústeres.
 
-## Mètode codo i visualtizació de cluster amb diferents distáncies
+## Método del codo y visualización de cluster con diferentes distancias
 
 Similar al ejemplo 5.2.5 al tener datos numéricos muy diferentes procedemos a escalarlos, usaremos el método del codo para obtener el número de clusters óptimo. Primero probaremos usando la distáncia euclidea.
 

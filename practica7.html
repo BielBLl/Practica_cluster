@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Biel Bauzà, Marc Arrom, Eulàlia Tous i Rebeca Payà">
-<meta name="dcterms.date" content="2024-12-17">
+<meta name="dcterms.date" content="2024-12-18">
 
 <title>Problema 5</title>
 <style>
@@ -111,9 +111,9 @@ window.Quarto = {
    
   <ul>
   <li><a href="#enunciat" id="toc-enunciat" class="nav-link active" data-scroll-target="#enunciat">Enunciat</a></li>
-  <li><a href="#anàlisi-descriptiu-de-les-dades" id="toc-anàlisi-descriptiu-de-les-dades" class="nav-link" data-scroll-target="#anàlisi-descriptiu-de-les-dades">Anàlisi descriptiu de les dades</a>
+  <li><a href="#análisis-descriptivo-de-los-datos" id="toc-análisis-descriptivo-de-los-datos" class="nav-link" data-scroll-target="#análisis-descriptivo-de-los-datos">Análisis descriptivo de los datos</a>
   <ul class="collapse">
-  <li><a href="#mètode-codo-i-visualtizació-de-cluster-amb-diferents-distáncies" id="toc-mètode-codo-i-visualtizació-de-cluster-amb-diferents-distáncies" class="nav-link" data-scroll-target="#mètode-codo-i-visualtizació-de-cluster-amb-diferents-distáncies">Mètode codo i visualtizació de cluster amb diferents distáncies</a></li>
+  <li><a href="#método-del-codo-y-visualización-de-cluster-con-diferentes-distancias" id="toc-método-del-codo-y-visualización-de-cluster-con-diferentes-distancias" class="nav-link" data-scroll-target="#método-del-codo-y-visualización-de-cluster-con-diferentes-distancias">Método del codo y visualización de cluster con diferentes distancias</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -140,7 +140,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">December 17, 2024</p>
+      <p class="date">December 18, 2024</p>
     </div>
   </div>
   
@@ -165,10 +165,10 @@ window.Quarto = {
 </ul>
 <p>Presentad un análisis exploratorio de los datos junto con un resumen de lo observado en el contexto del problema. Aplicad técnicas de clustering para agrupar individuos que tengan formas de cuerpos semejantes. Escribid una conclusión del análisis realizado en el contexto del problema</p>
 </section>
-<section id="anàlisi-descriptiu-de-les-dades" class="level1">
-<h1>Anàlisi descriptiu de les dades</h1>
+<section id="análisis-descriptivo-de-los-datos" class="level1">
+<h1>Análisis descriptivo de los datos</h1>
 <p><a href="https://github.com/BielBLl/Practica_cluster">Enlace al GitHub</a></p>
-<p>En aquest apartat tractarem de fer una visualització general de les dades i el seu comportament entre elles, com ara estudiar la seua correlació i mitjanes separat per sexe. A continuació mostrarem un parell de gràfiques on podrem veure el comportament de les nostres dades d’una forma més intuitiva i visual.</p>
+<p>En este apartado trataremos de hacer una visualización general de los datos y su comportamiento entre ellos, como por ejemplo estudiar su correlación y medias separadas por sexo. A continuación, mostraremos un par de gráficos donde podremos observar el comportamiento de nuestros datos de una forma más intuitiva y visual.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -178,20 +178,20 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Podem observar que les variables d’altura i cintura tenen una correlació positiva molt alta respecte la resta, altres variables que també tenen una alta correlació positiva és el pes amb l’altura i cintura, fet del qual té prou sentit. D’altra banda, podem veure que la grasa corporal té una alta correlació negativa amb el pes, l’altura i la cintura.</p>
+<p>Podemos observar que las variables de altura y cintura tienen una correlación positiva muy alta respecto al resto. Otras variables que también tienen una alta correlación positiva son el peso con la altura y la cintura, algo que tiene bastante sentido. Por otro lado, podemos ver que el indice de grasa corporal tiene una alta correlación negativa con el peso, la altura y la cintura.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="practica7_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="practica7_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Analitzem primer les variables de forma individual.</p>
+<p>Analizamos primero las variables de forma individual.</p>
 <ul>
-<li>Podem observar com la majoria pareixen seguir una distribució normal aproximada, però s’haurien de fer contratos d’hipòtesis per poder afirmar-ho.</li>
-<li>Separant les dades en funció del sexe observem que l’altura, el pes i la cintura tenen valors més alts en el cas dels homes, mentre que la majoria de dones tenen una grasa corporal superior. Els valors de la cadera i del IMC són similars als dos casos, encara que la mitjana continua sent major en el cas de les dones.</li>
+<li>Podemos observar que la mayoría parecen seguir una distribución normal aproximada, pero sería necesario realizar contrastes de hipótesis para poder afirmarlo.</li>
+<li>Separando los datos en función del sexo, observamos que la <strong>altura</strong>, el <strong>peso</strong> y la <strong>cintura</strong> tienen valores más altos en el caso de los hombres, mientras que la mayoría de mujeres tienen un <strong>porcentaje de grasa corporal</strong> superior. Los valores de la <strong>cadera</strong> y del <strong>IMC</strong> son similares en ambos casos, aunque la media sigue siendo mayor en el caso de las mujeres.</li>
 </ul>
 <p>En cuanto al análisis por pares tenemos</p>
 <ul>
@@ -207,21 +207,21 @@ window.Quarto = {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="practica7_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="practica7_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>Las celdas azules indican observaciones con baja distancia, es decir, son valores similares entre sí. Las celdas rojas muestran observaciones con grandes distancias, es decir, valores diferentes entre sí. Las celdas blancas representan valores intermedios de distancia.</p>
 <p>Se observan bloques azules a lo largo de la diagonal, esto indica la presencia de grupos de observaciones similares, lo que quiere decir que pueden ser posibles clústeres.</p>
-<section id="mètode-codo-i-visualtizació-de-cluster-amb-diferents-distáncies" class="level2">
-<h2 class="anchored" data-anchor-id="mètode-codo-i-visualtizació-de-cluster-amb-diferents-distáncies">Mètode codo i visualtizació de cluster amb diferents distáncies</h2>
+<section id="método-del-codo-y-visualización-de-cluster-con-diferentes-distancias" class="level2">
+<h2 class="anchored" data-anchor-id="método-del-codo-y-visualización-de-cluster-con-diferentes-distancias">Método del codo y visualización de cluster con diferentes distancias</h2>
 <p>Similar al ejemplo 5.2.5 al tener datos numéricos muy diferentes procedemos a escalarlos, usaremos el método del codo para obtener el número de clusters óptimo. Primero probaremos usando la distáncia euclidea.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="practica7_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="practica7_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -232,7 +232,7 @@ window.Quarto = {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="practica7_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="practica7_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -242,7 +242,7 @@ window.Quarto = {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="practica7_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="practica7_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -253,7 +253,7 @@ window.Quarto = {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="practica7_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="practica7_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -295,7 +295,7 @@ Available components:
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="practica7_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="practica7_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -308,7 +308,7 @@ Available components:
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="practica7_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="practica7_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -321,7 +321,7 @@ Available components:
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="practica7_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="practica7_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
